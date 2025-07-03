@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Productivity Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+    :root {
+      --bg: #e3f6f5;
+      --text: #000000;
+      --card: #bae8e8;
+    }
+    .dark-mode {
+      --bg: #121212;
+      --text: #e0e0e0;
+      --card: #2b2b2b;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1em;
+      padding: 1em;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+    section {
+      background-color: var(--card);
+      padding: 1em;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, select, button {
+      margin-top: 0.5em;
+      padding: 0.5em;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #35bcbf;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1da1a5;
+    }
+    .note {
+      margin-top: 0.5em;
+      padding: 0.5em;
+      background-color: #aeccc6;
+      border-radius: 5px;
+    }
+    .todo-done {
+      text-decoration: line-through;
+      color: #2c5d63;
+    }
+    .theme-toggle {
+      text-align: right;
+      padding: 0.5em;
+    }
+    .clock {
+      text-align: center;
+      font-size: 1.2em;
+    }
+    #time {
+      font-size: 2em;
+      font-weight: bold;
+    }
+    .pomodoro {
+      text-align: center;
+    }
+    #timer-display {
+      font-size: 2.5em;
+      margin: 0.5em 0;
+      font-weight: bold;
+    }
+    #mode-label {
+      font-weight: bold;
+      color: #2d6a4f;
+    }
+    .event-item {
+      padding: 0.4em;
+      margin-top: 0.3em;
+      border-radius: 5px;
+      color: white;
+    }
+    .color-red { background-color: #8E1616; }
+    .color-green { background-color: #255F38; }
+    .color-blue { background-color: #001A6E; }
+    .calendar-nav-btn {
+      font-size: 0.5cm;
+      padding: 1em 1em;
+      width: 1cm;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle">
+    <button onclick="toggleTheme()">🌙 / ☀️</button>
+  </div>
+  <div class="dashboard">
+    <div class="column">
+      <section class="clock">
+        <h2>⏰ Now</h2>
+        <h3 id="time">--:--:--</h3>
+        <p id="date">Loading date...</p>
+        <p id="location">Tirupati</p>
+        <p id="weather">Loading weather...</p>
+      </section>
+
+      <section class="pomodoro">
+        <h2>⏳ Custom Timer</h2>
+        <label>Set Timer:</label><br />
+        <p id="min">Min 
+          <input type="number" id="custom-minutes" min="0" max="59" value="0" placeholder="Min" />
+        </p>
+        <p id="sec">Sec 
+          <input type="number" id="custom-seconds" min="0" max="59" value="25" placeholder="Sec" />
+        </p>
+        <div id="timer-display">00:25</div>
+        <p id="mode-label">Focus Mode</p>
+        <button onclick="startTimer()">▶️ Start</button>
+        <button onclick="pauseTimer()">⏸️ Pause</button>
+        <button onclick="resetTimer()">🔄 Reset</button>
+        <audio id="alarm" preload="auto">
+          <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
+          <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.mp3" type="audio/mpeg">
+        </audio>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="todo">
+        <h2>📝 To-Do List</h2>
+        <input type="text" id="todo-input" placeholder="Add task" />
+        <button onclick="addTodo()">Add</button>
+        <button onclick="undoDelete()">↩️ Undo Delete</button>
+        <select id="filter" onchange="filterTasks()">
+          <option value="all">All</option>
+          <option value="done">Done</option>
+          <option value="notdone">Not Done</option>
+        </select>
+        <ul id="todo-list"></ul>
+      </section>
+
+      <section class="notes">
+        <h2>🗒️ Sticky Notes</h2>
+        <textarea id="note-input" placeholder="Write your note here..."></textarea>
+        <button onclick="addNote()">Add Note</button>
+        <div id="note-board"></div>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="calendar">
+        <h2>📅 Calendar with Events</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <button class="calendar-nav-btn" onclick="prevMonth()">←</button>
+          <h3 id="month-label"></h3>
+          <button class="calendar-nav-btn" onclick="nextMonth()">→</button>
+        </div>
+        <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px;"></div>
+        <hr>
+        <input type="date" id="calendar-date" />
+        <input type="text" id="event-text" placeholder="Event details...">
+        <select id="event-color">
+          <option value="color-red">Red</option>
+          <option value="color-green">Green</option>
+          <option value="color-blue">Blue</option>
+        </select>
+        <button onclick="addEvent()">Add Event</button>
+      </section>
+    </div>
+  </div>
+<script>
+  function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+  }
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById("time").innerText = now.toLocaleTimeString();
+    document.getElementById("date").innerText = now.toDateString();
+  }
+
+  function fetchWeather() {
+    const lat = 13.6288; // Tirupati Latitude
+    const lon = 79.4192; // Tirupati Longitude
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+      .then(res => res.json())
+      .then(data => {
+        const w = data.current_weather;
+        document.getElementById("weather").innerText = `🌡️ ${w.temperature}°C | Windspeed: ${w.windspeed} km/h`;
+      })
+      .catch(() => {
+        document.getElementById("weather").innerText = "Weather unavailable";
+      });
+  }
+let timer;
+  let timeLeft = 25; // Default to 25 seconds
+  let isRunning = false;
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function updateTimerDisplay() {
+    document.getElementById("timer-display").innerText = formatTime(timeLeft);
+  }
+
+  function startTimer() {
+    if (isRunning) return;
+
+    const min = parseInt(document.getElementById("custom-minutes").value) || 0;
+    const sec = parseInt(document.getElementById("custom-seconds").value) || 0;
+    const total = min * 60 + sec;
+
+    if (total < 5 || total > 3600) {
+      alert("⏳ Please enter a time between 5 seconds and 60 minutes.");
+      return;
+    }
+
+    timeLeft = total;
+    updateTimerDisplay();
+    isRunning = true;
+
+    timer = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timer);
+        isRunning = false;
+        document.getElementById("alarm").play().catch(() => {});
+        alert("⏰ Time's up!");
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    clearInterval(timer);
+    isRunning = false;
+  }
+
+  function resetTimer() {
+    pauseTimer();
+    const min = parseInt(document.getElementById("custom-minutes").value) || 0;
+    const sec = parseInt(document.getElementById("custom-seconds").value) || 0;
+    timeLeft = min * 60 + sec;
+    updateTimerDisplay();
+  }
+
+  // Set initial time display
+  document.addEventListener("DOMContentLoaded", updateTimerDisplay);
+
+    
+  // CALENDAR
+  let currentDate = new Date();
+  let currentMonth = currentDate.getMonth();
+  let currentYear = currentDate.getFullYear();
+  let events = JSON.parse(localStorage.getItem("calendarEvents") || "[]");
+
+  function addEvent() {
+    const date = document.getElementById("calendar-date").value;
+    const text = document.getElementById("event-text").value.trim();
+    const color = document.getElementById("event-color").value;
+    if (!date || !text) return;
+    events.push({ date, text, color });
+    localStorage.setItem("calendarEvents", JSON.stringify(events));
+    document.getElementById("event-text").value = "";
+    renderEvents();
+  }
+
+  function deleteEvent(index) {
+    events.splice(index, 1);
+    localStorage.setItem("calendarEvents", JSON.stringify(events));
+    renderEvents();
+  }
+
+  function renderEvents() {
+    const grid = document.getElementById("calendar-grid");
+    grid.innerHTML = "";
+
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    daysOfWeek.forEach(d => {
+      const cell = document.createElement("div");
+      cell.style.fontWeight = "bold";
+      cell.textContent = d;
+      grid.appendChild(cell);
+    });
+
+    const start = new Date(currentYear, currentMonth, 1);
+    const end = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = end.getDate();
+    const startDay = start.getDay();
+
+    for (let i = 0; i < startDay; i++) {
+      const empty = document.createElement("div");
+      grid.appendChild(empty);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = new Date(currentYear, currentMonth, d).toISOString().slice(0, 10);
+      const cell = document.createElement("div");
+      cell.style.border = "1px solid #ccc";
+      cell.style.padding = "5px";
+      cell.style.borderRadius = "5px";
+      cell.style.minHeight = "60px";
+      cell.innerHTML = `<strong>${d}</strong><div id='e-${dateStr}'></div>`;
+      grid.appendChild(cell);
+    }
+
+    events.forEach((e, i) => {
+      const container = document.getElementById(`e-${e.date}`);
+      if (container) {
+        const div = document.createElement("div");
+        div.className = `event-item ${e.color}`;
+        div.style.fontSize = "0.8em";
+        div.textContent = e.text;
+        div.onclick = () => {
+          if (confirm("Delete this event?")) deleteEvent(i);
+        };
+        container.appendChild(div);
+      }
+    });
+
+    document.getElementById("month-label").textContent = `${start.toLocaleString('default', { month: 'long' })} ${currentYear}`;
+  }
+
+  function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    renderEvents();
+  }
+
+  function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderEvents();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderEvents();
+    updateClock();
+    updateTimerDisplay();
+    setInterval(updateClock, 1000);
+    loadTodos();
+    loadNotes();
+  });
+// TODO LIST
+let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+let deletedTodos = [];
+
+function addTodo() {
+  const input = document.getElementById("todo-input");
+  const task = input.value.trim();
+  if (!task) return;
+  todos.push({ task, done: false });
+  localStorage.setItem("todos", JSON.stringify(todos));
+  input.value = "";
+  loadTodos();
+}
+
+function loadTodos() {
+  const list = document.getElementById("todo-list");
+  list.innerHTML = "";
+  todos.forEach((todo, i) => {
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+    span.textContent = todo.task;
+    span.style.cursor = "pointer";
+    span.className = todo.done ? "todo-done" : "";
+    span.onclick = () => {
+      todos[i].done = !todos[i].done;
+      localStorage.setItem("todos", JSON.stringify(todos));
+      loadTodos();
+    };
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "❌";
+    delBtn.style.marginLeft = "10px";
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      deletedTodos.push(todos[i]);
+      todos.splice(i, 1);
+      localStorage.setItem("todos", JSON.stringify(todos));
+      loadTodos();
+    };
+
+    li.appendChild(span);
+    li.appendChild(delBtn);
+    list.appendChild(li);
+  });
+  filterTasks();
+}
+
+function filterTasks() {
+  const filter = document.getElementById("filter").value;
+  const items = document.querySelectorAll("#todo-list li");
+  items.forEach(item => {
+    const done = item.classList.contains("todo-done");
+    if (filter === "done" && !done) item.style.display = "none";
+    else if (filter === "notdone" && done) item.style.display = "none";
+    else item.style.display = "list-item";
+  });
+}
+
+function undoDelete() {
+  if (deletedTodos.length > 0) {
+    todos.push(deletedTodos.pop());
+    localStorage.setItem("todos", JSON.stringify(todos));
+    loadTodos();
+  }
+}
+
+// STICKY NOTES
+function addNote() {
+  const input = document.getElementById("note-input");
+  const note = input.value.trim();
+  if (!note) return;
+  const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+  notes.push(note);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  input.value = "";
+  loadNotes();
+}
+
+function loadNotes() {
+  const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+  const board = document.getElementById("note-board");
+  board.innerHTML = "";
+  notes.forEach((note, i) => {
+    const div = document.createElement("div");
+    div.className = "note";
+    div.textContent = note;
+    div.onclick = () => {
+      notes.splice(i, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      loadNotes();
+    };
+    board.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
