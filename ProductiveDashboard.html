@@ -302,7 +302,11 @@
         grid.appendChild(empty);
       }
       for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = new Date(currentYear, currentMonth, d).toISOString().slice(0, 10);
+        const dateObj = new Date(currentYear, currentMonth, d);
+        const dateStr = dateObj.getFullYear() + "-" +
+          String(dateObj.getMonth() + 1).padStart(2, "0") + "-" +
+          String(dateObj.getDate()).padStart(2, "0");
+      
         const cell = document.createElement("div");
         cell.style.border = "1px solid #ccc";
         cell.style.padding = "5px";
@@ -311,6 +315,7 @@
         cell.innerHTML = `<strong>${d}</strong><div id='e-${dateStr}'></div>`;
         grid.appendChild(cell);
       }
+
       events.forEach((e, i) => {
         const container = document.getElementById(`e-${e.date}`);
         if (container) {
@@ -448,3 +453,4 @@
   </script>
 </body>
 </html>
+
