@@ -6,169 +6,135 @@
   <title>Productivity Dashboard</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      transition: all 0.3s ease;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background-color: var(--bg);
+        color: var(--text);
+        transition: all 0.3s ease;
     }
+
+    /* 🎨 Light Mode Colors (Cool Tones) */
     :root {
-      --bg: #e3f6f5;
-      --text: #000000;
-      --card: #bae8e8;
+        --bg: #F0F7FF;
+        --text: #1C1C1C;
+        --card: #E6F0FA;
+        --accent: #4DA8DA;
+        --accent-hover: #1DA1A5;
+        --highlight: #7B68EE;
+        --note: #DFF6FF;
+        --todo-done: #2C5D63;
+        --event-red: #8E1616; 
+        --event-green: #255F38;
+        --event-blue: #001A6E;
     }
+
+    /* 🌙 Dark Mode */
     .dark-mode {
-      --bg: #121212;
-      --text: #e0e0e0;
-      --card: #2b2b2b;
+        --bg: #121212;
+        --text: #E0E0E0;
+        --card: #1E1E2E;
+        --accent: #40E0D0;
+        --accent-hover: #00CED1;
+        --highlight: #9D7BFF;
+        --note: #2A2A40;
+        --todo-done: #8AB6D6;
+        --event-red: #FF4C4C;
+        --event-green: #3ED598;
+        --event-blue: #4D96FF;
     }
+
+    /* ===== Layout ===== */
+    .top-bar {
+        display: flex;
+        font-family: "Georgia";
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em;
+        background: var(--accent);
+        color: white;
+        border-bottom: 4px solid var(--highlight);
+    }
+    .top-bar h1 { margin: 0; font-size: 1.5em; }
+    .theme-toggle button {
+        background: var(--highlight);
+        border: none;
+        padding: 0.5em 1em;
+        border-radius: 8px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+    .theme-toggle button:hover { background: var(--accent-hover); }
+
     .dashboard {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1em;
-      padding: 1em;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1em;
+        padding: 1em;
     }
+
     .column {
-      display: flex;
-      flex-direction: column;
-      gap: 1em;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
     }
+
     section {
-      background-color: var(--card);
-      padding: 1em;
-      border-radius: 10px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        background-color: var(--card);
+        padding: 1em;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(77, 168, 218, 0.3);
     }
+
     input, textarea, select, button {
-      margin-top: 0.5em;
-      padding: 0.5em;
-      width: 100%;
-      border-radius: 5px;
-      border: none;
+        margin-top: 0.5em;
+        padding: 0.5em;
+        width: 100%;
+        border-radius: 5px;
+        border: none;
     }
-    button {
-      background-color: #35bcbf;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #1da1a5;
-    }
-    .note {
-      margin-top: 0.5em;
-      padding: 0.5em;
-      background-color: #aeccc6;
-      border-radius: 5px;
-    }
-    .todo-done {
-      text-decoration: line-through;
-      color: #2c5d63;
-    }
-    .theme-toggle {
-      text-align: right;
-      padding: 0.5em;
-    }
-    .clock {
-      text-align: center;
-      font-size: 1.2em;
-    }
-    #time {
-      font-size: 2em;
-      font-weight: bold;
-    }
-    .pomodoro {
-      text-align: center;
-    }
-    #timer-display {
-      font-size: 2.5em;
-      margin: 0.5em 0;
-      font-weight: bold;
-    }
-    #mode-label {
-      font-weight: bold;
-      color: #2d6a4f;
-    }
-    .event-item {
-      padding: 0.4em;
-      margin-top: 0.3em;
-      border-radius: 5px;
-      color: white;
-    }
-    .color-red { background-color: #8E1616; }
-    .color-green { background-color: #255F38; }
-    .color-blue { background-color: #001A6E; }
-    .calendar-nav-btn {
-      font-size: 0.5cm;
-      padding: 1em 1em;
-      width: 1cm;
-      line-height: 1;
-    }
+    button { background-color: var(--accent); color: white; cursor: pointer; font-weight: bold; }
+    button:hover { background-color: var(--accent-hover); }
+
+    .note { margin-top: 0.5em; padding: 0.5em; background-color: var(--note); border-radius: 5px; }
+    .todo-done { text-decoration: line-through; color: var(--todo-done); }
+    .clock { text-align: center; font-size: 1.2em; }
+    #time { font-size: 2em; font-weight: bold; color: var(--highlight); }
+
+    .pomodoro { text-align: center; }
+    #timer-display { font-size: 2.5em; margin: 0.5em 0; font-weight: bold; color: var(--highlight); }
+    #mode-label { font-weight: bold; color: var(--accent); }
+
+    .event-item { padding: 0.4em; margin-top: 0.3em; border-radius: 5px; color: white; }
+    .color-red { background-color: var(--event-red); }
+    .color-green { background-color: var(--event-green); }
+    .color-blue { background-color: var(--event-blue); }
+
+    .calendar-nav-btn { font-size: 0.5cm; padding: 0.1em 0.1em; width: fit-content; line-height: fit-content; }
   </style>
 </head>
 <body>
-  <div class="theme-toggle">
-    <button onclick="toggleTheme()">🌙 / ☀️</button>
-  </div>
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <h1>  The FUTURE Depends On What You Do TODAY </h1>
+    <div class="theme-toggle">
+      <button onclick="toggleTheme()">🌙 / ☀️</button>
+    </div>
+  </header>
+
+  <!-- Dashboard Grid -->
   <div class="dashboard">
-    <div class="column">
-      <section class="clock">
-        <h2>⏰ Now</h2>
-        <h3 id="time">--:--:--</h3>
-        <p id="date">Loading date...</p>
-        <p id="location">Tirupati</p>
-        <p id="weather">Loading weather...</p>
-      </section>
-
-      <section class="pomodoro">
-        <h2>⏳ Custom Timer</h2>
-        <label>Set Timer:</label><br />
-        <p id="min">Min 
-          <input type="number" id="custom-minutes" min="0" max="59" value="0" placeholder="Min" />
-        </p>
-        <p id="sec">Sec 
-          <input type="number" id="custom-seconds" min="0" max="59" value="25" placeholder="Sec" />
-        </p>
-        <div id="timer-display">00:25</div>
-        <p id="mode-label">Focus Mode</p>
-        <button onclick="startTimer()">▶️ Start</button>
-        <button onclick="pauseTimer()">⏸️ Pause</button>
-        <button onclick="resetTimer()">🔄 Reset</button>
-        <audio id="alarm" preload="auto">
-          <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
-          <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.mp3" type="audio/mpeg">
-        </audio>
-      </section>
-    </div>
-
-    <div class="column">
-      <section class="todo">
-        <h2>📝 To-Do List</h2>
-        <input type="text" id="todo-input" placeholder="Add task" />
-        <button onclick="addTodo()">Add</button>
-        <button onclick="undoDelete()">↩️ Undo Delete</button>
-        <select id="filter" onchange="filterTasks()">
-          <option value="all">All</option>
-          <option value="done">Done</option>
-          <option value="notdone">Not Done</option>
-        </select>
-        <ul id="todo-list"></ul>
-      </section>
-
-      <section class="notes">
-        <h2>🗒️ Sticky Notes</h2>
-        <textarea id="note-input" placeholder="Write your note here..."></textarea>
-        <button onclick="addNote()">Add Note</button>
-        <div id="note-board"></div>
-      </section>
-    </div>
-
+    <!-- Left Column: Calendar -->
     <div class="column">
       <section class="calendar">
-        <h2>📅 Calendar with Events</h2>
+        <!--<h2>📅 Calendar with Events</h2>-->
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <button class="calendar-nav-btn" onclick="prevMonth()">←</button>
-          <h3 id="month-label"></h3>
-          <button class="calendar-nav-btn" onclick="nextMonth()">→</button>
+          <h2 id="month-label"></h2>
+          <div class="calendar-arrows">
+            <button class="calendar-nav-btn" onclick="prevMonth()">&#9650;</button>
+            <button class="calendar-nav-btn" onclick="nextMonth()">&#9660;</button>
+          </div>
         </div>
         <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px;"></div>
         <hr>
@@ -180,6 +146,55 @@
           <option value="color-blue">Blue</option>
         </select>
         <button onclick="addEvent()">Add Event</button>
+      </section>
+    </div>
+
+    <!-- Middle Column: To-do + Timer -->
+    <div class="column">
+      <section class="todo">
+        <h2>📝 Check List </h2>
+        <input type="text" id="todo-input" placeholder="Add task" />
+        <button onclick="addTodo()">Add</button>
+        <button onclick="undoDelete()">↩️ Undo Delete</button>
+        <select id="filter" onchange="filterTasks()">
+          <option value="all">All</option>
+          <option value="done">Done</option>
+          <option value="notdone">Not Done</option>
+        </select>
+        <ul id="todo-list"></ul>
+      </section>
+
+      <section class="pomodoro">
+        <h2>⏳ Timer </h2>
+        <label>Set Timer:</label><br />
+        <p>Min <input type="number" id="custom-minutes" min="0" max="59" value="0"/></p>
+        <p>Sec <input type="number" id="custom-seconds" min="0" max="59" value="25"/></p>
+        <div id="timer-display">00:25</div>
+        <p id="mode-label">Focus Mode</p>
+        <button onclick="startTimer()">▶️ Start</button>
+        <button onclick="pauseTimer()">⏸️ Pause</button>
+        <button onclick="resetTimer()">🔄 Reset</button>
+        <audio id="alarm" preload="auto">
+          <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
+        </audio>
+      </section>
+    </div>
+
+    <!-- Right Column: Clock + Notes -->
+    <div class="column">
+      <section class="clock">
+        <!--<h2>⏰ Now</h2>-->
+        <h3 id="time">--:--:--</h3>
+        <p id="date">Loading date...</p>
+        <p id="location">Tirupati</p>
+        <p id="weather">Loading weather...</p>
+      </section>
+
+      <section class="notes">
+        <h2>🗒️ Sticky Notes</h2>
+        <textarea id="note-input" placeholder="Write your note here..."></textarea>
+        <button onclick="addNote()">Add Note</button>
+        <div id="note-board"></div>
       </section>
     </div>
   </div>
@@ -302,19 +317,19 @@
         grid.appendChild(empty);
       }
       for (let d = 1; d <= daysInMonth; d++) {
-        const dateObj = new Date(currentYear, currentMonth, d);
-        const dateStr = dateObj.getFullYear() + "-" +
-          String(dateObj.getMonth() + 1).padStart(2, "0") + "-" +
-          String(dateObj.getDate()).padStart(2, "0");
-      
-        const cell = document.createElement("div");
-        cell.style.border = "1px solid #ccc";
-        cell.style.padding = "5px";
-        cell.style.borderRadius = "5px";
-        cell.style.minHeight = "60px";
-        cell.innerHTML = `<strong>${d}</strong><div id='e-${dateStr}'></div>`;
-        grid.appendChild(cell);
-      }
+  const dateObj = new Date(currentYear, currentMonth, d);
+  const dateStr = dateObj.getFullYear() + "-" +
+    String(dateObj.getMonth() + 1).padStart(2, "0") + "-" +
+    String(dateObj.getDate()).padStart(2, "0");
+
+  const cell = document.createElement("div");
+  cell.style.border = "1px solid #ccc";
+  cell.style.padding = "5px";
+  cell.style.borderRadius = "5px";
+  cell.style.minHeight = "60px";
+  cell.innerHTML = `<strong>${d}</strong><div id='e-${dateStr}'></div>`;
+  grid.appendChild(cell);
+}
 
       events.forEach((e, i) => {
         const container = document.getElementById(`e-${e.date}`);
@@ -453,4 +468,3 @@
   </script>
 </body>
 </html>
-
