@@ -10,7 +10,7 @@ This is a simple and interactive Productivity Dashboard built using basic web te
 - Shows the current time and date.
 - Displays your location (Tirupati) and weather information including temperature and wind speed.
 
-### 2. Pomodoro Timer with Custom Time
+### 2. Timer with Custom Time
 - You can set any time from 5 seconds to 60 minutes.
 - Includes Start, Pause, and Reset buttons.
 - Plays an alarm sound and shows a pop-up when the timer ends.
