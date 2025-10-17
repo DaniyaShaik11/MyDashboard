@@ -1,49 +1,75 @@
 # Productivity Dashboard
 
-This is a simple and interactive Productivity Dashboard built using basic web technologies. It helps you manage your time, tasks, notes, and calendar events — all in one place. The design is clean and easy to use, with a light and dark mode option.
+A modern, responsive productivity dashboard built with HTML, CSS, and JavaScript. It combines a calendar with events, to-do list, timer, clock with weather, and sticky notes, all in a glassmorphic UI style with dark/light auto-theme support.
 
----
+Features
+🌟 Modern Glass UI
 
-## Features
+Glassmorphism design with soft gradients and shadows.
 
-### 1. Real-Time Clock
-- Shows the current time and date.
-- Displays your location (Tirupati) and weather information including temperature and wind speed.
+Responsive layout: Single column on mobile, 2 columns on tablets, 3 columns on large screens.
 
-### 2. Timer with Custom Time
-- You can set any time from 5 seconds to 60 minutes.
-- Includes Start, Pause, and Reset buttons.
-- Plays an alarm sound and shows a pop-up when the timer ends.
-- You can switch between Focus Mode and Break Time automatically.
+Auto theme detection and toggle (light/dark mode).
 
-### 3. To-Do List
-- Add new tasks and mark them as done.
-- Delete tasks and undo deleted ones.
-- Filter tasks by All, Done, or Not Done.
-- Tasks are saved in the browser so they are not lost on refresh.
+📅 Calendar & Events
 
-### 4. Sticky Notes
-- Write short notes or reminders.
-- Notes are saved in local storage and can be deleted by clicking on them.
+Displays current month with weekdays.
 
-### 5. Calendar with Events
-- Monthly calendar display.
-- Add events for any date with a chosen color.
-- Events are saved in your browser and can be deleted by clicking on them.
-- You can move between months.
+Allows adding events with color tags (red, green, blue).
 
-### 6. Light/Dark Theme Toggle
-- Switch between light and dark mode easily with a button.
+Events are stored in localStorage for persistence.
 
----
+Click an event to delete it.
 
-## Technologies Used
+✅ To-do List
 
-- **HTML**: For page structure
-- **CSS**: For layout and theme styling
-- **JavaScript**: For all interactive features
-- **LocalStorage**: For saving tasks, notes, and events in the browser
-- **Open-Meteo API**: To fetch live weather data
+Add tasks, mark as done, and delete tasks.
+
+Undo recently deleted tasks.
+
+Filter tasks by All, Done, Not Done.
+
+Data persists in localStorage.
+
+⏱ Timer
+
+Focus timer with customizable minutes and seconds.
+
+Start, Pause, and Reset functionality.
+
+Alert and audio notification when time runs out.
+
+🕒 Clock & Weather
+
+Live time and date display.
+
+Shows current weather for a fixed location (Tirupati).
+
+Fetches temperature and wind speed from Open-Meteo API.
+
+📝 Sticky Notes
+
+Add quick notes.
+
+Notes click to delete.
+
+Stored in localStorage.
+
+Technologies Used
+
+HTML5 — Structure and content.
+
+CSS3 — Styling with glassmorphism, responsive layout, and dark/light theme.
+
+JavaScript (Vanilla) — Logic for calendar, events, to-do list, timer, notes, and weather.
+
+LocalStorage — Persistent storage for events, todos, and notes.
+
+Open-Meteo API — Fetch current weather information.
+
+Google Fonts — Poppins for typography.
+
+Material Symbols — Icons for buttons and UI.
 
 ---
 
@@ -61,8 +87,3 @@ This is a simple and interactive Productivity Dashboard built using basic web te
 - Developers managing tasks and focus sessions
 - Anyone who wants a simple, all-in-one productivity page
 
----
-
-## License
-
-This project is open to use and modify for learning or personal productivity needs.
