@@ -3,206 +3,344 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Productivity Dashboard</title>
+  <title>Productivity Dashboard — Modern Glass</title>
+
+  <!-- Google Poppins + Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet" />
+
   <style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0;
-        background-color: var(--bg);
-        color: var(--text);
-        transition: all 0.3s ease;
+    :root{
+      --max-width: 1400px;
+      --gap: 18px;
+      --radius: 14px;
+      --glass-opacity: 0.5;
+      --glass-border-light: rgba(255,255,255,0.45);
+      --glass-border-dark: rgba(255,255,255,0.06);
     }
 
-    /* 🎨 Light Mode Colors (Cool Tones) */
-    :root {
-        --bg: #F0F7FF;
-        --text: #1C1C1C;
-        --card: #E6F0FA;
-        --accent: #4DA8DA;
-        --accent-hover: #1DA1A5;
-        --highlight: #7B68EE;
-        --note: #DFF6FF;
-        --todo-done: #2C5D63;
-        --event-red: #8E1616; 
-        --event-green: #255F38;
-        --event-blue: #001A6E;
+    /* Light / Dark colors (Auto theme switches via body.dark-mode) */
+    :root{
+      --bg-gradient-light: hsl(283 100% 34.5%);
+      --bg-gradient-dark: hsl(283 100% 12.7%);
+
+      --text-light: #0f1724;
+      --muted-light: #3b4752;
+
+      --card-bg-light: rgba(255,255,255,0.6);
+      --card-border-light: rgba(255,255,255,0.6);
+
+      --accent-light: #4DA8DA;
+      --glow-light: rgba(77,168,218,0.18);
+
+      --card-bg-dark: rgba(18,20,28,0.42);
+      --card-border-dark: rgba(255,255,255,0.06);
+
+      --text-dark: #e6eef6;
+      --muted-dark: #9fb0c8;
+
+      --accent-dark: #40E0D0;
+      --glow-dark: rgba(150,100,255,0.06);
     }
 
-    /* 🌙 Dark Mode */
-    .dark-mode {
-        --bg: #121212;
-        --text: #E0E0E0;
-        --card: #1E1E2E;
-        --accent: #40E0D0;
-        --accent-hover: #00CED1;
-        --highlight: #9D7BFF;
-        --note: #2A2A40;
-        --todo-done: #8AB6D6;
-        --event-red: #FF4C4C;
-        --event-green: #3ED598;
-        --event-blue: #4D96FF;
+    /* Base styles */
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: var(--bg-gradient-light);
+      color: var(--text-light);
+      transition: background 300ms ease, color 300ms ease;
+      display:flex;
+      justify-content:center;
+      padding:32px 20px;
     }
 
-    /* ===== Layout ===== */
-    .top-bar {
-        display: flex;
-        font-family: "Georgia";
-        justify-content: space-between;
-        align-items: center;
-        padding: 1em;
-        background: var(--accent);
-        color: white;
-        border-bottom: 4px solid var(--highlight);
-    }
-    .top-bar h1 { margin: 0; font-size: 1.5em; }
-    .theme-toggle button {
-        background: var(--highlight);
-        border: none;
-        padding: 0.5em 1em;
-        border-radius: 8px;
-        cursor: pointer;
-        color: white;
-        font-weight: bold;
-        transition: background 0.3s;
-    }
-    .theme-toggle button:hover { background: var(--accent-hover); }
-
-    .dashboard {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1em;
-        padding: 1em;
+    /* Dark mode toggle class */
+    body.dark-mode{
+      background: var(--bg-gradient-dark);
+      color: var(--text-dark);
     }
 
-    .column {
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
+    /* App container */
+    .app{
+      width:100%;
+      max-width: var(--max-width);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: var(--gap);
+      align-items:start;
+      transition: all 300ms ease;
     }
 
-    section {
-        background-color: var(--card);
-        padding: 1em;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(77, 168, 218, 0.3);
+    /* Top bar */
+    .top-bar{
+      grid-column:1/-1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:18px;
+      border-radius: calc(var(--radius) + 4px);
+      backdrop-filter: blur(12px) saturate(120%);
+      -webkit-backdrop-filter: blur(12px) saturate(120%);
+      box-shadow: 0 8px 30px rgba(8,20,40,0.08);
+      border: 1px solid var(--glass-border-light);
+      background: var(--card-bg-light);
+      transition: background 300ms ease, border 300ms ease, box-shadow 300ms ease;
     }
 
-    input, textarea, select, button {
-        margin-top: 0.5em;
-        padding: 0.5em;
-        width: 100%;
-        border-radius: 5px;
-        border: none;
+    body.dark-mode .top-bar{
+      background: var(--card-bg-dark);
+      border: 1px solid var(--card-border-dark);
+      box-shadow: 0 10px 40px rgba(2,6,20,0.6);
     }
-    button { background-color: var(--accent); color: white; cursor: pointer; font-weight: bold; }
-    button:hover { background-color: var(--accent-hover); }
 
-    .note { margin-top: 0.5em; padding: 0.5em; background-color: var(--note); border-radius: 5px; }
-    .todo-done { text-decoration: line-through; color: var(--todo-done); }
-    .clock { text-align: center; font-size: 1.2em; }
-    #time { font-size: 2em; font-weight: bold; color: var(--highlight); }
+    .brand{
+      display:flex;align-items:center;gap:14px
+    }
+    .logo{
+      width:52px;height:52px;border-radius:12px;display:grid;place-items:center;
+      font-weight:600;font-size:18px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+      border:1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+    }
+    .title{font-weight:600;font-size:1rem}
+    .subtitle{font-size:0.85rem;color:var(--muted-light)}
+    body.dark-mode .subtitle{color:var(--muted-dark)}
 
-    .pomodoro { text-align: center; }
-    #timer-display { font-size: 2.5em; margin: 0.5em 0; font-weight: bold; color: var(--highlight); }
-    #mode-label { font-weight: bold; color: var(--accent); }
+    /* Controls */
+    .controls{display:flex;gap:12px;align-items:center}
+    .theme-toggle{display:flex;gap:10px;align-items:center}
 
-    .event-item { padding: 0.4em; margin-top: 0.3em; border-radius: 5px; color: white; }
-    .color-red { background-color: var(--event-red); }
-    .color-green { background-color: var(--event-green); }
-    .color-blue { background-color: var(--event-blue); }
+    .icon-btn{
+      display:inline-grid;place-items:center;width:44px;height:44px;border-radius:10px;border:none;cursor:pointer;
+      background:transparent;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(6px);
+    }
+    .icon-btn .material-symbols-outlined{font-size:20px}
 
-    .calendar-nav-btn { font-size: 0.5cm; padding: 0.1em 0.1em; width: fit-content; line-height: fit-content; }
+    /* Dashboard grid center & widen: 3 columns on large screens */
+    @media(min-width:980px){
+      .app{grid-template-columns: 1.05fr 1fr 1fr;}
+    }
+
+    /* Card common */
+    section.card{
+      padding:18px;border-radius:var(--radius);
+      background: var(--card-bg-light);
+      border: 1px solid var(--glass-border-light);
+      box-shadow: 0 6px 24px rgba(10,25,50,0.06);
+      backdrop-filter: blur(10px) saturate(120%);
+      transition: transform 220ms ease, box-shadow 220ms ease, border 220ms ease;
+    }
+
+    body.dark-mode section.card{
+      background: var(--card-bg-dark);
+      border: 1px solid var(--card-border-dark);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+
+    section.card:hover{ transform: translateY(-6px); }
+
+    h2{margin:0 0 10px 0;font-size:1rem}
+    label{font-size:0.85rem;color:var(--muted-light);}
+
+    input, textarea, select, button{font-family:inherit}
+
+    /* Form elements look glassy */
+    .glass-input{
+      width:100%;padding:10px 12px;border-radius:10px;border:none;margin-top:8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      outline:none;box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02);
+      color:inherit;
+    }
+    body.dark-mode .glass-input{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06)); }
+
+    .btn-primary{
+      display:inline-flex;gap:8px;align-items:center;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;
+      background: linear-gradient(90deg, rgba(77,168,218,0.14), rgba(123,104,238,0.12));
+      backdrop-filter: blur(8px);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    .btn-primary:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(77,168,218,0.08); }
+
+    /* Small utilities */
+    .row{display:flex;gap:10px;align-items:center}
+    .muted{color:var(--muted-light);font-size:0.85rem}
+    body.dark-mode .muted{color:var(--muted-dark)}
+
+    /* Calendar grid */
+    #calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:10px}
+    #calendar-grid > div{min-height:64px;padding:8px;border-radius:8px}
+    #calendar-grid > div:nth-child(-n+7){font-weight:700;color:var(--muted-light)}
+
+    .event-item{padding:6px;border-radius:8px;margin-top:6px;font-size:0.82rem;color:#fff}
+    .color-red{background:#c0392b}
+    .color-green{background:#16a085}
+    .color-blue{background:#1e90ff}
+
+    /* To-do list */
+    #todo-list{list-style:none;padding:0;margin:8px 0}
+    #todo-list li{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px}
+    .todo-done{opacity:0.6;text-decoration:line-through}
+
+    /* Timer */
+    #timer-display{font-size:2rem;font-weight:700;margin:6px 0;color:var(--accent-light)}
+    body.dark-mode #timer-display{color:var(--accent-dark)}
+
+    /* Clock & notes */
+    .clock h3{font-size:1.6rem;margin:6px 0}
+    .note{padding:10px;border-radius:8px;margin-top:8px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));}
+
+    /* Responsive adjustments */
+    @media(max-width:979px){
+      .app{grid-template-columns:1fr 1fr;}
+      .top-bar{padding:14px}
+    }
+    @media(max-width:680px){
+      .app{grid-template-columns:1fr;}
+    }
+
+    /* Small visual polish */
+    .material-symbols-outlined{vertical-align:middle}
+
   </style>
 </head>
 <body>
-  <!-- Top Bar -->
-  <header class="top-bar">
-    <h1>  The FUTURE Depends On What You Do TODAY </h1>
-    <div class="theme-toggle">
-      <button onclick="toggleTheme()">🌙 / ☀️</button>
-    </div>
-  </header>
-
-  <!-- Dashboard Grid -->
-  <div class="dashboard">
-    <!-- Left Column: Calendar -->
-    <div class="column">
-      <section class="calendar">
-        <!--<h2>📅 Calendar with Events</h2>-->
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2 id="month-label"></h2>
-          <div class="calendar-arrows">
-            <button class="calendar-nav-btn" onclick="prevMonth()">&#9650;</button>
-            <button class="calendar-nav-btn" onclick="nextMonth()">&#9660;</button>
-          </div>
+  <div class="app">
+    <!-- Top bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="logo">PD</div>
+        <div>
+          <div class="subtitle"><h2> Future depends on what you do TODAY </h2></div>
         </div>
-        <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px;"></div>
-        <hr>
-        <input type="date" id="calendar-date" />
-        <input type="text" id="event-text" placeholder="Event details...">
-        <select id="event-color">
-          <option value="color-red">Red</option>
-          <option value="color-green">Green</option>
-          <option value="color-blue">Blue</option>
-        </select>
-        <button onclick="addEvent()">Add Event</button>
-      </section>
-    </div>
+      </div>
 
-    <!-- Middle Column: To-do + Timer -->
-    <div class="column">
-      <section class="todo">
-        <h2>📝 Check List </h2>
-        <input type="text" id="todo-input" placeholder="Add task" />
-        <button onclick="addTodo()">Add</button>
-        <button onclick="undoDelete()">↩️ Undo Delete</button>
-        <select id="filter" onchange="filterTasks()">
-          <option value="all">All</option>
-          <option value="done">Done</option>
-          <option value="notdone">Not Done</option>
-        </select>
+      <div class="controls">
+        <div class="muted"><strong>Daniya Shaik</strong></div>
+        <div class="theme-toggle">
+          <button class="icon-btn" id="themeToggleBtn" title="Toggle theme">
+            <span class="material-symbols-outlined">dark_mode</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Left / Calendar -->
+    <section class="card" id="calendarCard">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 id="month-label">Month</h2>
+          <div class="muted">Calendar & events</div>
+        </div>
+        <div class="row">
+          <button class="icon-btn" onclick="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
+          <button class="icon-btn" onclick="nextMonth()"><span class="material-symbols-outlined">chevron_right</span></button>
+        </div>
+      </div>
+
+      <div id="calendar-grid"></div>
+
+      <hr style="margin:12px 0;border:none;border-top:1px solid rgba(0,0,0,0.06);">
+      <input class="glass-input" type="date" id="calendar-date" />
+      <input class="glass-input" type="text" id="event-text" placeholder="Event details...">
+      <select class="glass-input" id="event-color">
+        <option value="color-red">Red</option>
+        <option value="color-green">Green</option>
+        <option value="color-blue">Blue</option>
+      </select>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn-primary" onclick="addEvent()"><span class="material-symbols-outlined">add</span>Add Event</button>
+      </div>
+    </section>
+
+    <!-- Middle column: Todo + Timer -->
+    <div>
+      <section class="card">
+        <h2>Check List</h2>
+        <div class="muted">Tasks to get done</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <input id="todo-input" class="glass-input" placeholder="Add task" />
+          <button class="btn-primary" onclick="addTodo()"><span class="material-symbols-outlined">add_task</span></button>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <button class="icon-btn" onclick="undoDelete()" title="Undo delete"><span class="material-symbols-outlined">undo</span></button>
+          <select id="filter" class="glass-input" onchange="filterTasks()">
+            <option value="all">All</option>
+            <option value="done">Done</option>
+            <option value="notdone">Not Done</option>
+          </select>
+        </div>
+
         <ul id="todo-list"></ul>
       </section>
 
-      <section class="pomodoro">
-        <h2>⏳ Timer </h2>
-        <label>Set Timer:</label><br />
-        <p>Min <input type="number" id="custom-minutes" min="0" max="59" value="0"/></p>
-        <p>Sec <input type="number" id="custom-seconds" min="0" max="59" value="25"/></p>
+      <section class="card" style="margin-top:var(--gap)">
+        <h2>Timer</h2>
+        <label class="muted">Set time</label>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <div style="display:flex;gap:6px;align-items:center"><label class="muted">Min</label><input type="number" id="custom-minutes" class="glass-input" style="width:86px" min="0" max="59" value="0"/></div>
+          <div style="display:flex;gap:6px;align-items:center"><label class="muted">Sec</label><input type="number" id="custom-seconds" class="glass-input" style="width:86px" min="0" max="59" value="25"/></div>
+        </div>
+
         <div id="timer-display">00:25</div>
-        <p id="mode-label">Focus Mode</p>
-        <button onclick="startTimer()">▶️ Start</button>
-        <button onclick="pauseTimer()">⏸️ Pause</button>
-        <button onclick="resetTimer()">🔄 Reset</button>
+        <div id="mode-label" class="muted">Focus Mode</div>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn-primary" onclick="startTimer()"><span class="material-symbols-outlined">play_arrow</span>Start</button>
+          <button class="btn-primary" onclick="pauseTimer()"><span class="material-symbols-outlined">pause</span>Pause</button>
+          <button class="btn-primary" onclick="resetTimer()"><span class="material-symbols-outlined">restart_alt</span>Reset</button>
+        </div>
         <audio id="alarm" preload="auto">
           <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
         </audio>
       </section>
     </div>
 
-    <!-- Right Column: Clock + Notes -->
-    <div class="column">
-      <section class="clock">
-        <!--<h2>⏰ Now</h2>-->
-        <h3 id="time">--:--:--</h3>
-        <p id="date">Loading date...</p>
-        <p id="location">Tirupati</p>
-        <p id="weather">Loading weather...</p>
+    <!-- Right column: Clock + Notes -->
+    <div>
+      <section class="card clock">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h3 id="time">--:--:--</h3>
+            <div id="date" class="muted">Loading date...</div>
+            <div id="location" class="muted">Tirupati</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">Weather</div>
+            <div id="weather" style="font-weight:600;margin-top:6px">Loading...</div>
+          </div>
+        </div>
       </section>
 
-      <section class="notes">
-        <h2>🗒️ Sticky Notes</h2>
-        <textarea id="note-input" placeholder="Write your note here..."></textarea>
-        <button onclick="addNote()">Add Note</button>
+      <section class="card" style="margin-top:var(--gap)">
+        <h2>Sticky Notes</h2>
+        <textarea id="note-input" class="glass-input" rows="3" placeholder="Write your note here..."></textarea>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn-primary" onclick="addNote()"><span class="material-symbols-outlined">note_add</span>Add Note</button>
+        </div>
         <div id="note-board"></div>
       </section>
     </div>
+
   </div>
 
   <script>
-    function toggleTheme() {
-      document.body.classList.toggle("dark-mode");
-    }
+    /* Theme handling */
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if(prefersDark) document.body.classList.add('dark-mode');
+
+    themeBtn.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark-mode');
+    });
+
+    /* -----------------  functionalites (calendar, todos, timer, notes, weather, clock) ----------------- */
 
     function updateClock() {
       const now = new Date();
@@ -224,6 +362,7 @@
         });
     }
 
+    /* Timer */
     let timer;
     let timeLeft = 25;
     let isRunning = false;
@@ -276,6 +415,7 @@
       updateTimerDisplay();
     }
 
+    /* Calendar */
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
@@ -304,7 +444,8 @@
       const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       daysOfWeek.forEach(d => {
         const cell = document.createElement("div");
-        cell.style.fontWeight = "bold";
+        cell.style.fontWeight = "700";
+        cell.style.opacity = "0.9";
         cell.textContent = d;
         grid.appendChild(cell);
       });
@@ -317,26 +458,25 @@
         grid.appendChild(empty);
       }
       for (let d = 1; d <= daysInMonth; d++) {
-  const dateObj = new Date(currentYear, currentMonth, d);
-  const dateStr = dateObj.getFullYear() + "-" +
-    String(dateObj.getMonth() + 1).padStart(2, "0") + "-" +
-    String(dateObj.getDate()).padStart(2, "0");
+        const dateObj = new Date(currentYear, currentMonth, d);
+        const dateStr = dateObj.getFullYear() + "-" +
+          String(dateObj.getMonth() + 1).padStart(2, "0") + "-" +
+          String(dateObj.getDate()).padStart(2, "0");
 
-  const cell = document.createElement("div");
-  cell.style.border = "1px solid #ccc";
-  cell.style.padding = "5px";
-  cell.style.borderRadius = "5px";
-  cell.style.minHeight = "60px";
-  cell.innerHTML = `<strong>${d}</strong><div id='e-${dateStr}'></div>`;
-  grid.appendChild(cell);
-}
+        const cell = document.createElement("div");
+        cell.style.minHeight = "74px";
+        cell.style.padding = "8px";
+        cell.style.borderRadius = "8px";
+        cell.innerHTML = `<strong>${d}</strong><div id='e-${dateStr}'></div>`;
+        grid.appendChild(cell);
+      }
 
       events.forEach((e, i) => {
         const container = document.getElementById(`e-${e.date}`);
         if (container) {
           const div = document.createElement("div");
           div.className = `event-item ${e.color}`;
-          div.style.fontSize = "0.8em";
+          div.style.fontSize = "0.82em";
           div.textContent = e.text;
           div.onclick = () => {
             if (confirm("Delete this event?")) deleteEvent(i);
@@ -347,24 +487,10 @@
       document.getElementById("month-label").textContent = `${start.toLocaleString('default', { month: 'long' })} ${currentYear}`;
     }
 
-    function prevMonth() {
-      currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
-      renderEvents();
-    }
+    function prevMonth() { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderEvents(); }
+    function nextMonth() { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderEvents(); }
 
-    function nextMonth() {
-      currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
-      renderEvents();
-    }
-
+    /* Todos */
     let todos = JSON.parse(localStorage.getItem("todos") || "[]");
     let deletedTodos = [];
 
@@ -416,7 +542,7 @@
         const done = span.classList.contains("todo-done");
         if (filter === "done" && !done) span.parentElement.style.display = "none";
         else if (filter === "notdone" && done) span.parentElement.style.display = "none";
-        else span.parentElement.style.display = "list-item";
+        else span.parentElement.style.display = "flex";
       });
     }
 
@@ -428,6 +554,7 @@
       }
     }
 
+    /* Notes */
     function addNote() {
       const input = document.getElementById("note-input");
       const note = input.value.trim();
@@ -460,7 +587,7 @@
       renderEvents();
       updateClock();
       updateTimerDisplay();
-      fetchWeather(); // ✅ Automatically fetches weather
+      fetchWeather();
       setInterval(updateClock, 1000);
       loadTodos();
       loadNotes();
