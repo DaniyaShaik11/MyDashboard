@@ -2,7 +2,8 @@
 
 A modern, responsive productivity dashboard built with HTML, CSS, and JavaScript. It combines a calendar with events, to-do list, timer, clock with weather, and sticky notes, all in a glassmorphic UI style with dark/light auto-theme support.
 
-Features
+Features:
+
 🌟 Modern Glass UI
 
 Glassmorphism design with soft gradients and shadows.
